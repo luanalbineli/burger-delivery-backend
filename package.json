@@ -1,0 +1,21 @@
+{
+  "name": "burger-deliver-backend",
+  "version": "1.0.0",
+  "description": "This is the backend of the burger-deliver-android (it is just a dummy. The main purpouse of this implementation is to complete the second part of the Capstone Project of Udacity's Android Nanodegree Program)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "udacity",
+    "capstone",
+    "project",
+    "android"
+  ],
+  "author": "A. Pinto, Luan",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  }
+}
