@@ -9,10 +9,10 @@ var port = process.env.PORT || 8080;
 
 var router = express.Router();
 
-var hamburgers = require('./hamburgers');
-router.get('/hamburgers', function(request, response) {	
-	console.log("hamburgers: " + JSON.stringify(hamburgers))
-	response.json(JSON.stringify(hamburgers));
+var burger = require('./hamburgers');
+router.get('/burger', function(request, response) {	
+	console.log("burger: " + JSON.stringify(burger))
+	response.json(burger);
 });
 
 app.use('/api', router);
