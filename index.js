@@ -1,20 +1,16 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
+const express = require('express')
+	, app = express()
+	, bodyParser = require('body-parser')
+	, admin = require("firebase-admin")
+	, router = express.Router()
+	, port = process.env.PORT || 9090;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('images'))
 
-var port = process.env.PORT || 8080;
-
-var router = express.Router();
-
-var burger = require('./hamburgers');
-router.get('/burger', function(request, response) {	
-	console.log("burger: " + JSON.stringify(burger))
-	response.json(burger);
-});
+router.get('/burger', require('./controller/get-burger'));
+router.post('order', require('./controller/post-order'));
 
 app.use('/api', router);
 
