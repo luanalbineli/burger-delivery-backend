@@ -10,6 +10,23 @@ admin.initializeApp({
 	databaseURL: "https://burgerdelivery-f72fd.firebaseio.com"
 });
 
+const payload = {
+	data: {
+		status: '1',
+		id: '2'
+	},
+	notification: {
+		title: "Notification title",
+    	body: "This is the notification message. I'll show the current status of the order"
+  	}
+};
+admin.messaging().sendToDevice(token, payload)
+	.then(function(response) {
+    	console.info('Successfully sent message', response);
+  	}).catch(error => {
+  		console.error('An error occurred while tried to send the message. Trying again.', error);
+	});
+
 module.exports = (request, response) => {
 	const id = orderIdIncrementer++;
 
