@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.use(express.static('images'))
 
 router.get('/burger', require('./controller/get-burger'));
-router.post('order', require('./controller/post-order'));
+router.post('/order', require('./controller/post-order'));
 
 app.use('/api', router);
 

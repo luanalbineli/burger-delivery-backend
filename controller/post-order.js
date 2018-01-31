@@ -10,7 +10,7 @@ admin.initializeApp({
 	databaseURL: "https://burgerdelivery-f72fd.firebaseio.com"
 });
 
-const payload = {
+/*const payload = {
 	data: {
 		status: '1',
 		id: '2'
@@ -25,7 +25,7 @@ admin.messaging().sendToDevice(token, payload)
     	console.info('Successfully sent message', response);
   	}).catch(error => {
   		console.error('An error occurred while tried to send the message. Trying again.', error);
-	});
+	});*/
 
 module.exports = (request, response) => {
 	const id = orderIdIncrementer++;
@@ -45,16 +45,22 @@ module.exports = (request, response) => {
 }
 
 function scheduleUpdateOrderEvent(orderId) {
-	setTimeout(() => {
+	const timeoutExecutor = () => {
 		const orderModel = orders[orderId];
 		orderModel.status++;
 
 		const payload = {
 			data: {
-				status: orderModel.status,
-				id: orderId
+				status: orderModel.status + '',
+				id: orderId + ''
+  			},
+  			notification: {
+  				title: 'Order status update',
+  				body: 'Your order status changed to: ' + getOrderStatus(orderModel.status)
   			}
 		};
+
+		console.info('Sending the message to the order: ' + orderId, payload);
 
 		admin.messaging().sendToDevice(orderModel.fcmToken, payload)
 			.then(function(response) {
@@ -62,13 +68,30 @@ function scheduleUpdateOrderEvent(orderId) {
 		    	if (orderModel.status !== ORDER_STATUS.DELIVERED) {
 		    		console.info('Scheduling the next update');
 					scheduleUpdateOrderEvent(orderId);
+		    	} else {
+		    		console.info('The order was delivered');
 		    	}
 		  	}).catch(error => {
 		  		console.error('An error occurred while tried to send the message. Trying again.', error)
 		    	orderModel.status--;
 		    	scheduleUpdateOrderEvent(orderId);
   		});
-	}, DEFAULT_EVENT_TIME);
+	};
+
+	setTimeout(timeoutExecutor, DEFAULT_EVENT_TIME);
+}
+
+function getOrderStatus(status) {
+	switch(status) {
+		case ORDER_STATUS.SENT:
+			return "SENT";
+		case ORDER_STATUS.PREPARING:
+			return "PREPARING";
+		case ORDER_STATUS.IN_ROUTE:
+			return "IN ROUTE";
+		default:
+			return "DELIVERED";
+	}
 }
 
 var ORDER_STATUS = {
