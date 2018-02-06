@@ -1,33 +1,16 @@
 var orderIdIncrementer = 1;
 
 const admin = require("firebase-admin")
-	, serviceAccount = require(CONFIG_FILE)
-	, orders = {}
-	, DEFAULT_EVENT_TIME = 30 * 1000; // Update the order status every 30 seconds.
+	, serviceAccount = require("../firebase/burgerdelivery-f72fd-firebase-adminsdk-10snz-425fa59b1d")
+	, DEFAULT_EVENT_TIME = 30 * 1000 // Update the order status every 30 seconds.
+	, ORDER_STATUS = require('../common/order-status');
 
 admin.initializeApp({
 	credential: admin.credential.cert(serviceAccount),
 	databaseURL: "https://burgerdelivery-f72fd.firebaseio.com"
 });
 
-/*const payload = {
-	data: {
-		status: '1',
-		id: '2'
-	},
-	notification: {
-		title: "Notification title",
-    	body: "This is the notification message. I'll show the current status of the order"
-  	}
-};
-admin.messaging().sendToDevice(token, payload)
-	.then(function(response) {
-    	console.info('Successfully sent message', response);
-  	}).catch(error => {
-  		console.error('An error occurred while tried to send the message. Trying again.', error);
-	});*/
-
-module.exports = (request, response) => {
+module.exports = (request, response, orders) => {
 	const id = orderIdIncrementer++;
 
 	console.log(request.body, 'BODY');
@@ -39,12 +22,12 @@ module.exports = (request, response) => {
 
 	orders[id] = order;
 
-	scheduleUpdateOrderEvent(id);
+	scheduleUpdateOrderEvent(id, orders);
 
 	response.json({id});
 }
 
-function scheduleUpdateOrderEvent(orderId) {
+function scheduleUpdateOrderEvent(orderId, orders) {
 	const timeoutExecutor = () => {
 		const orderModel = orders[orderId];
 		orderModel.status++;
@@ -56,7 +39,8 @@ function scheduleUpdateOrderEvent(orderId) {
   			},
   			notification: {
   				title: 'Order status update',
-  				body: 'Your order status changed to: ' + getOrderStatus(orderModel.status)
+  				body: 'Your order status changed to: ' + getOrderStatus(orderModel.status),
+  				android_channel_id: 'fcm_order_status_update_channel'
   			}
 		};
 
@@ -92,11 +76,4 @@ function getOrderStatus(status) {
 		default:
 			return "DELIVERED";
 	}
-}
-
-var ORDER_STATUS = {
-	SENT: 1,
-	PREPARING: 2,
-    IN_ROUTE: 3,
-    DELIVERED: 4
 }
