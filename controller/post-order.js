@@ -28,7 +28,9 @@ module.exports = (request, response, orders) => {
 }
 
 function scheduleUpdateOrderEvent(orderId, orders) {
+	console.log('ORDERS_OUT', orders);
 	const timeoutExecutor = () => {
+		console.log('ORDERS_IN', orders);
 		const orderModel = orders[orderId];
 		orderModel.status++;
 
@@ -40,7 +42,8 @@ function scheduleUpdateOrderEvent(orderId, orders) {
   			notification: {
   				title: 'Order status update',
   				body: 'Your order status changed to: ' + getOrderStatus(orderModel.status),
-  				android_channel_id: 'fcm_order_status_update_channel'
+  				android_channel_id: 'fcm_order_status_update_channel',
+  				click_action: 'HISTORIC_ORDER_LIST'
   			}
 		};
 
@@ -51,14 +54,14 @@ function scheduleUpdateOrderEvent(orderId, orders) {
 		    	console.info('Successfully sent message', response);
 		    	if (orderModel.status !== ORDER_STATUS.DELIVERED) {
 		    		console.info('Scheduling the next update');
-					scheduleUpdateOrderEvent(orderId);
+					scheduleUpdateOrderEvent(orderId, orders);
 		    	} else {
 		    		console.info('The order was delivered');
 		    	}
 		  	}).catch(error => {
 		  		console.error('An error occurred while tried to send the message. Trying again.', error)
 		    	orderModel.status--;
-		    	scheduleUpdateOrderEvent(orderId);
+		    	scheduleUpdateOrderEvent(orderId, orders);
   		});
 	};
 

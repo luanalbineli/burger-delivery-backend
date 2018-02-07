@@ -5,7 +5,7 @@ module.exports = [
 		"description": "Fresh 100% beef burger with our signature sauce, garnished with a dill pickle slice, lettuce, tomato and onion",
 		"ingredients": ["Beef burger", "Sauce", "Pickles", "Lettuce", "Tomato", "Onion"],
 		"price": 15.5,
-		"imageUrl": "http://90.0.1.143:8080/3-brasseurs-burger-with.jpg"
+		"imageUrl": "https://media-cdn.tripadvisor.com/media/photo-s/0e/74/f0/15/3-brasseurs-burger-with.jpg"
 	},
 	{
 		"id": 2,
@@ -13,7 +13,7 @@ module.exports = [
 		"description": "Fresh 100% beef burger with our signature sauce, topped with crisp bacon and melted cheese, garnished with a dill pickle slice, lettuce, tomato and onion",
 		"ingredients": ["Beef burger", "Bacon", "Sauce", "Pickles", "Lettuce", "Tomato", "Onion"],
 		"price": 18.5,
-		"imageUrl": "http://90.0.1.143:8080/20161201-3brasseurs-11.jpg"
+		"imageUrl": "https://s3.amazonaws.com/btoimage/prism-thumbnails/uploads/2016/12/05/20161201-3brasseurs-11.jpg"
 	},
 	{
 		"id": 3,
